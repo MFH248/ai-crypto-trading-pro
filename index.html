@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Crypto Pro">
+<link rel="manifest" href="manifest.webmanifest">
+<title>AI Crypto Trading Pro</title>
+<style>
+:root{color-scheme:dark;--bg:#080e19;--panel:#111c2d;--panel2:#17243a;--text:#edf3ff;--muted:#91a3bd;--green:#27d49a;--red:#ff647c;--blue:#72a7ff;--line:#25344b;--gold:#ffc66d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1424,#080e19 45%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;padding:env(safe-area-inset-top) 14px calc(78px + env(safe-area-inset-bottom));}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 14px}h1{font-size:20px;margin:0;font-weight:800;letter-spacing:.2px}.sub{font-size:11px;color:var(--muted);margin-top:5px}.live{font-size:11px;color:var(--green);border:1px solid #1b795e;padding:6px 9px;border-radius:20px}
+h2{font-size:15px;margin:20px 2px 10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 24px #0002}.coin{font-size:12px;color:var(--muted)}.price{font-size:22px;font-weight:800;margin:8px 0 5px;letter-spacing:-.5px}.change{font-size:12px}.positive{color:var(--green)}.negative{color:var(--red)}.muted{color:var(--muted)}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.section-head{display:flex;justify-content:space-between;align-items:center}.pill{border-radius:20px;padding:5px 9px;font-size:11px;background:#24344d;color:#c6d8f3}.signal{padding:16px;margin-top:10px}.signal strong{font-size:17px}.signal .big{font-size:26px;font-weight:850;margin:10px 0}.long{color:var(--green)}.short{color:var(--red)}.wait{color:var(--gold)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.stat{background:#0c1626;border-radius:12px;padding:11px}.stat label{display:block;color:var(--muted);font-size:11px}.stat b{display:block;font-size:15px;margin-top:6px}.bar{height:7px;background:#24344d;border-radius:8px;overflow:hidden;margin:10px 0}.bar span{display:block;height:100%;background:linear-gradient(90deg,#4f8fff,#27d49a);width:0}.tabs{position:fixed;bottom:0;left:0;right:0;padding:9px 8px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;background:#0b1424f2;border-top:1px solid var(--line);backdrop-filter:blur(16px)}.tabs button{background:none;border:0;color:var(--muted);font-size:10px;padding:5px 7px}.tabs button.active{color:var(--blue)}.tabs span{display:block;font-size:19px;margin-bottom:3px}.page{display:none}.page.active{display:block}.notice{background:#332817;border:1px solid #71532b;color:#ffe0a8;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.55;margin-top:12px}.btn{border:0;border-radius:12px;background:#2868c9;color:white;padding:11px 14px;font-weight:700}.btn.secondary{background:#24344d;color:#dce8fa}.controls{display:flex;gap:8px;flex-wrap:wrap}.controls select,.controls input{background:#0c1626;border:1px solid var(--line);color:var(--text);padding:10px;border-radius:10px}.list{display:grid;gap:9px}.item{display:flex;justify-content:space-between;gap:10px;padding:12px;background:#0c1626;border-radius:12px;font-size:12px}.small{font-size:11px;color:var(--muted);line-height:1.55}.metric{font-size:12px;line-height:1.8}.metric b{color:#fff}.footer{font-size:10px;color:#70839f;text-align:center;margin:24px 0 8px}
+</style>
+</head>
+<body>
+<header><div><h1>AI Crypto Trading Pro</h1><div class="sub">BITGET USDT 永續合約・行情分析工具</div></div><div class="live" id="connection">● 連線中</div></header>
+
+<main>
+<section class="page active" id="home">
+ <div class="grid">
+  <div class="card"><div class="coin">BTC / USDT</div><div class="price" id="btcPrice">讀取中…</div><div class="change" id="btcChange">--</div></div>
+  <div class="card"><div class="coin">ETH / USDT</div><div class="price" id="ethPrice">讀取中…</div><div class="change" id="ethChange">--</div></div>
+ </div>
+ <div class="section-head"><h2>市場訊號</h2><span class="pill" id="updated">等待資料</span></div>
+ <div class="card signal">
+  <div class="row"><span class="muted" id="signalSymbol">BTCUSDT</span><span class="pill" id="signalScore">評分 --/100</span></div>
+  <div class="big wait" id="signalDirection">分析中…</div>
+  <div class="small" id="signalReason">正在取得 15m、30m、1h K 線資料。</div>
+  <div class="bar"><span id="scoreBar"></span></div>
+  <div class="stats">
+   <div class="stat"><label>參考進場價</label><b id="entry">--</b></div>
+   <div class="stat"><label>參考停損價</label><b id="stop">--</b></div>
+   <div class="stat"><label>第一停利 TP1</label><b id="tp1">--</b></div>
+   <div class="stat"><label>第二停利 TP2</label><b id="tp2">--</b></div>
+  </div>
+ </div>
+ <div class="notice">這是行情研究與訊號輔助工具，不會替你下單。評分代表條件符合程度，不是獲利機率；訊號需待 K 線收盤確認，並自行檢查手續費、滑價及資金費率。</div>
+ <h2>市場觀察</h2><div class="list" id="marketList"><div class="item">正在載入行情…</div></div>
+ <div class="row" style="margin-top:12px"><button class="btn" onclick="refreshAll()">立即更新</button><span class="small" id="refreshStatus">每 60 秒自動更新</span></div>
+</section>
+
+<section class="page" id="analysis">
+ <h2>多週期技術分析</h2>
+ <div class="controls"><select id="asset" onchange="refreshAll()"><option value="BTCUSDT">BTCUSDT</option><option value="ETHUSDT">ETHUSDT</option></select><button class="btn secondary" onclick="refreshAll()">重新分析</button></div>
+ <div class="card" style="margin-top:12px"><div class="row"><span class="muted">現價</span><b id="analysisPrice">--</b></div><div class="row"><span class="muted">15分鐘趨勢</span><b id="trend15">--</b></div><div class="row"><span class="muted">30分鐘趨勢</span><b id="trend30">--</b></div><div class="row"><span class="muted">1小時趨勢</span><b id="trend60">--</b></div><div class="row"><span class="muted">RSI (15m)</span><b id="rsi">--</b></div><div class="row"><span class="muted">MACD (15m)</span><b id="macd">--</b></div><div class="row"><span class="muted">ATR (15m)</span><b id="atr">--</b></div></div>
+ <h2>策略判斷說明</h2><div class="card metric" id="analysisExplain">取得行情後顯示。</div>
+</section>
+
+<section class="page" id="signals">
+ <h2>交易訊號紀錄</h2><div class="small">本機暫存最近一次分析結果；不是實際成交紀錄。</div>
+ <div class="list" id="signalHistory" style="margin-top:12px"><div class="item">尚無紀錄</div></div>
+ <div class="notice">本版本尚未提供背景推播。若要在未開啟網頁時收到通知，需要部署雲端監控服務並設定 Apple 推播或其他通知管道。</div>
+</section>
+
+<section class="page" id="performance">
+ <h2>策略績效</h2>
+ <div class="card"><div class="stats"><div class="stat"><label>已記錄訊號</label><b id="perfCount">0</b></div><div class="stat"><label>模擬勝率</label><b>尚未建立</b></div><div class="stat"><label>Profit Factor</label><b>尚未建立</b></div><div class="stat"><label>最大回撤</label><b>尚未建立</b></div></div></div>
+ <div class="notice">績效統計必須建立逐筆進出場模擬，納入交易費、滑價及資金費率後才有意義。本版不會把訊號評分冒充勝率。</div>
+</section>
+
+<section class="page" id="settings">
+ <h2>風險設定</h2>
+ <div class="card">
+  <div class="row"><label>預設槓桿</label><select id="leverage"><option>3</option><option selected>5</option><option>10</option></select></div>
+  <div class="row" style="margin-top:14px"><label>單筆風險（帳戶資金 %）</label><select id="risk"><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></div>
+  <div class="row" style="margin-top:14px"><label>風險報酬比目標</label><select id="rr"><option>1.5</option><option selected>2</option><option>2.5</option><option>3</option></select></div>
+  <button class="btn" style="width:100%;margin-top:18px" onclick="saveSettings()">儲存設定</button>
+ </div>
+ <h2>資料與安全</h2><div class="card small">行情使用 Bitget 公開市場資料，不需要 API Key。此版本不會要求你的交易所密碼、API 金鑰，也沒有下單或提幣功能。請勿在任何不可信網頁輸入交易所 API Secret。</div>
+</section>
+</main>
+<nav class="tabs">
+ <button class="active" data-page="home"><span>⌂</span>總覽</button><button data-page="analysis"><span>⌁</span>分析</button><button data-page="signals"><span>◉</span>訊號</button><button data-page="performance"><span>▥</span>績效</button><button data-page="settings"><span>⚙</span>設定</button>
+</nav>
+<script>
+const API='https://api.bitget.com';
+const state={prices:{},history:[],analysis:{}};
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>Number.isFinite(n)?n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'--';
+async function getJSON(path){const r=await fetch(API+path,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(j.code!=='00000')throw new Error(j.msg||'Bitget API error');return j.data;}
+async function ticker(symbol){const d=await getJSON(`/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=${symbol}`);return Array.isArray(d)?d[0]:d;}
+async function candles(symbol,granularity){const d=await getJSON(`/api/v2/mix/market/candles?productType=USDT-FUTURES&symbol=${symbol}&granularity=${granularity}&limit=200`);return d.map(x=>({t:+x[0],o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]})).sort((a,b)=>a.t-b.t);}
+function ema(values,period){let k=2/(period+1),out=[],v=values[0];for(let i=0;i<values.length;i++){v=i===0?values[i]:values[i]*k+v*(1-k);out.push(v)}return out;}
+function rsi(vals,p=14){if(vals.length<=p)return NaN;let g=0,l=0;for(let i=vals.length-p;i<vals.length;i++){let x=vals[i]-vals[i-1];if(x>0)g+=x;else l-=x;}let ag=g/p,al=l/p;return al===0?100:100-100/(1+ag/al);}
+function atr(cs,p=14){if(cs.length<=p)return NaN;let tr=[];for(let i=1;i<cs.length;i++)tr.push(Math.max(cs[i].h-cs[i].l,Math.abs(cs[i].h-cs[i-1].c),Math.abs(cs[i].l-cs[i-1].c)));return tr.slice(-p).reduce((a,b)=>a+b,0)/p;}
+function calcTrend(cs){let c=cs.map(x=>x.c),e20=ema(c,20).at(-1),e50=ema(c,50).at(-1);return {up:e20>e50, e20,e50, last:c.at(-1)}}
+function calcMacd(vals){let a=ema(vals,12),b=ema(vals,26),line=vals.map((_,i)=>a[i]-b[i]),sig=ema(line,9);return {line:line.at(-1),signal:sig.at(-1)}}
+function signalFor(t15,t30,t60,cs){let closes=cs.map(x=>x.c),rr=rsi(closes),m=calcMacd(closes),a=atr(cs),volAvg=cs.slice(-21,-1).reduce((s,x)=>s+x.v,0)/20,vol=cs.at(-1).v;let long=0,short=0,reasons=[];if(t60.up)long+=20;else short+=20;if(t30.up)long+=20;else short+=20;if(t15.up)long+=20;else short+=20;if(rr>50&&rr<70)long+=10;if(rr<50&&rr>30)short+=10;if(m.line>m.signal)long+=10;else short+=10;if(vol>volAvg) {if(t15.up)long+=10;else short+=10;}let side=long>=70&&long>short?'LONG':short>=70&&short>long?'SHORT':'WAIT';let score=side==='LONG'?long:side==='SHORT'?short:Math.max(long,short);let price=t15.last,stop=side==='LONG'?price-1.5*a:side==='SHORT'?price+1.5*a:null;let risk=stop?Math.abs(price-stop):null,rrTarget=+$('rr').value||2;return {side,score,price,stop,tp1:stop?(side==='LONG'?price+risk:price-risk):null,tp2:stop?(side==='LONG'?price+risk*rrTarget:price-risk*rrTarget):null,rsi:rr,macd:m,atr:a,vol,volAvg,long,short};}
+function showPrice(id,val){$(id).textContent=val?fmt(+val, +val<10?4:2):'--';}
+async function refreshAll(){
+ $('connection').textContent='● 連線中';$('refreshStatus').textContent='更新中…';
+ try{
+  const [bt,et]=await Promise.all([ticker('BTCUSDT'),ticker('ETHUSDT')]);state.prices.BTCUSDT=bt;state.prices.ETHUSDT=et;
+  for(const [sym,t,p,c] of [['BTCUSDT',bt,'btcPrice','btcChange'],['ETHUSDT',et,'ethPrice','ethChange']]){showPrice(p,t.lastPr);let ch=+t.change24h*100;$(c).textContent=(ch>=0?'+':'')+fmt(ch,2)+'% / 24h';$(c).className='change '+(ch>=0?'positive':'negative');}
+  let sym=$('asset').value, [c15,c30,c60]=await Promise.all([candles(sym,'15m'),candles(sym,'30m'),candles(sym,'1H')]);
+  let t15=calcTrend(c15),t30=calcTrend(c30),t60=calcTrend(c60),s=signalFor(t15,t30,t60,c15);state.analysis={sym,t15,t30,t60,s};
+  $('analysisPrice').textContent=fmt(s.price,2);$('trend15').textContent=t15.up?'多頭排列':'空頭排列';$('trend30').textContent=t30.up?'多頭排列':'空頭排列';$('trend60').textContent=t60.up?'多頭排列':'空頭排列';$('rsi').textContent=fmt(s.rsi,1);$('macd').textContent=s.macd.line>s.macd.signal?'多方動能':'空方動能';$('atr').textContent=fmt(s.atr,2);
+  $('signalSymbol').textContent=sym;$('signalScore').textContent=`評分 ${Math.round(s.score)}/100`;$('scoreBar').style.width=Math.min(100,s.score)+'%';
+  let dir=s.side==='LONG'?'做多 LONG':s.side==='SHORT'?'做空 SHORT':'觀望 WAIT';$('signalDirection').textContent=dir;$('signalDirection').className='big '+(s.side==='LONG'?'long':s.side==='SHORT'?'short':'wait');
+  $('signalReason').textContent=`多方分數 ${s.long} / 空方分數 ${s.short}。三個週期需同向才較有參考價值；目前僅為規則評分。`;
+  $('entry').textContent=fmt(s.price,2);$('stop').textContent=s.stop?fmt(s.stop,2):'未形成訊號';$('tp1').textContent=s.tp1?fmt(s.tp1,2):'--';$('tp2').textContent=s.tp2?fmt(s.tp2,2):'--';
+  $('analysisExplain').innerHTML=`<b>判斷邏輯</b><br>1. 1h、30m、15m 各以 EMA20 與 EMA50 比較方向。<br>2. RSI、MACD 與成交量提供動能確認。<br>3. ATR × 1.5 作為初始停損距離，停利依設定風險報酬比推算。<br><br><b>注意：</b>此為示範版規則，尚未經嚴謹回測；目前使用最新 K 線，可能包含尚未收盤的 K 線。請勿直接依此投入資金。`;
+  $('marketList').innerHTML=['BTCUSDT','ETHUSDT'].map(x=>{let z=state.prices[x];return `<div class="item"><span>${x}<br><small class="muted">24h 成交量 ${z.baseVol||'--'}</small></span><b>${fmt(+z.lastPr,2)}</b></div>`}).join('');
+  $('updated').textContent='更新 '+new Date().toLocaleTimeString('zh-TW');$('connection').textContent='● 已連線';$('refreshStatus').textContent='每 60 秒自動更新';
+  const rec={time:new Date().toLocaleString('zh-TW'),sym,side:s.side,score:Math.round(s.score)};state.history.unshift(rec);state.history=state.history.slice(0,20);localStorage.setItem('signals',JSON.stringify(state.history));renderHistory();
+ }catch(e){$('connection').textContent='● 連線失敗';$('refreshStatus').textContent='讀取失敗：'+e.message+'。請確認網路或稍後重試。';}
+}
+function renderHistory(){let h=JSON.parse(localStorage.getItem('signals')||'[]');$('perfCount').textContent=h.length;$('signalHistory').innerHTML=h.length?h.map(x=>`<div class="item"><span>${x.sym} · ${x.time}</span><b class="${x.side==='LONG'?'long':x.side==='SHORT'?'short':'wait'}">${x.side} / ${x.score}</b></div>`).join(''):'<div class="item">尚無紀錄</div>';}
+function saveSettings(){localStorage.setItem('lev',$('leverage').value);localStorage.setItem('risk',$('risk').value);localStorage.setItem('rr',$('rr').value);alert('設定已儲存在此 iPhone 瀏覽器。');}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.page).classList.add('active');}));
+if(localStorage.getItem('lev'))$('leverage').value=localStorage.getItem('lev');if(localStorage.getItem('risk'))$('risk').value=localStorage.getItem('risk');if(localStorage.getItem('rr'))$('rr').value=localStorage.getItem('rr');
+renderHistory();refreshAll();setInterval(refreshAll,60000);
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
